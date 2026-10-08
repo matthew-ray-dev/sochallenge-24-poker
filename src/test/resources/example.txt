@@ -1,0 +1,2 @@
+This is an example of a test resource file.
+You should delete this.
