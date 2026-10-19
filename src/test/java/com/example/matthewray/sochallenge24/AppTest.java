@@ -1,4 +1,4 @@
-package com.example.foobar;
+package com.example.matthewray.sochallenge24;
 
 import static org.junit.Assert.assertEquals;
 import org.junit.After;

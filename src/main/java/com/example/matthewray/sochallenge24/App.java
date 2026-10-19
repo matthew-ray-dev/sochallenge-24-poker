@@ -1,4 +1,4 @@
-package com.example.foobar;
+package com.example.matthewray.sochallenge24;
 
 /**
  * Hello world!
