@@ -6,27 +6,47 @@ import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public record Card(int rank, Suit suit) implements Comparable<Card> {
-    private static final String[] rankNames = new String[] {
-            "TWO", "THREE", "FOUR", "FIVE", "SIX", "SEVEN", "EIGHT",
-            "NINE", "TEN", "JACK", "QUEEN", "KING", "ACE" };
-    private static final int rankNamesOffset = 2;
+public record Card(Rank rank, Suit suit) implements Comparable<Card> {
+    public static enum Rank {
+        TWO(2),
+        THREE(3),
+        FOUR(4),
+        FIVE(5),
+        SIX(6),
+        SEVEN(7),
+        EIGHT(8),
+        NINE(9),
+        TEN(10),
+        JACK(11),
+        QUEEN(12),
+        KING(13),
+        ACE(14);
+
+        private final int rankAsNumber;
+
+        private Rank(int rankAsNumber) {
+            this.rankAsNumber = rankAsNumber;
+        }
+
+        public int getRankAsNumber() {
+            return rankAsNumber;
+        }
+    }
 
     /**
-     * Converts from a rank name ("two", "seven", "Jack", etc.) to an int
-     * representing the rank. Int values range from 2 ("two") to 14 ("Ace"). If the
-     * rank name is not valid, returns -1. Case-insensitive.
+     * Converts from a rank name ("two", "seven", "Jack", etc.) to a Rank enum. If
+     * the rank name is not valid, returns null. Case-insensitive.
      * 
      * @param name The name of a card rank
-     * @return The equivalent int value (2 to 14), or -1 for an invalid rank
+     * @return The equivalent instance of the Rank enum, or null for an invalid rank
      */
-    private static final int convertRankNameToInt(String name) {
-        for (int i = 0; i < rankNames.length; i++) {
-            if (rankNames[i].equalsIgnoreCase(name)) {
-                return i + rankNamesOffset;
+    private static final Rank convertRankNameToRank(String name) {
+        for (Rank r : Rank.values()) {
+            if (r.name().equalsIgnoreCase(name)) {
+                return r;
             }
         }
-        return -1;
+        return null;
     }
 
     public static enum Suit {
@@ -57,28 +77,54 @@ public record Card(int rank, Suit suit) implements Comparable<Card> {
 
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
     public Card(
-            @JsonProperty("rank") String rank,
-            @JsonProperty("suit") String suit) {
-        int rankInt = Card.convertRankNameToInt(rank);
-        if (rankInt < 0) {
-            throw new IllegalArgumentException("\"%s\" is not a recognized rank.".formatted(rank));
+            @JsonProperty("rank") String rankName,
+            @JsonProperty("suit") String suitName) {
+        Rank rank = Card.convertRankNameToRank(rankName);
+        if (rank == null) {
+            throw new IllegalArgumentException("\"%s\" is not a recognized rank.".formatted(rankName));
         }
-        Suit suitEnum = Card.convertSuitNameToEnum(suit);
-        if (suitEnum == null) {
-            throw new IllegalArgumentException("\"%s\" is not a recognized suit.".formatted(suit));
+        Suit suit = Card.convertSuitNameToEnum(suitName);
+        if (suit == null) {
+            throw new IllegalArgumentException("\"%s\" is not a recognized suit.".formatted(suitName));
         }
-        this(rankInt, suitEnum);
+        this(rank, suit);
     }
 
     /**
-     * Compare poses first by rank, then suit
+     * Convenience wrapper for {@link Card#rank()}{@link Rank#getRankAsNumber()
+     * .getRankAsNumber()}.
+     */
+    public int rankNum() {
+        return rank.getRankAsNumber();
+    }
+
+    /**
+     * Compare cards first by rank, then suit
      */
     @Override
     public int compareTo(Card o) {
-        final int rankComparison = Integer.compare(this.rank(), o.rank());
+        final int rankComparison = Integer.compare(this.rank().getRankAsNumber(), o.rank().getRankAsNumber());
         if (rankComparison != 0) {
             return rankComparison;
         }
         return this.suit().compareTo(o.suit());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null) {
+            return false;
+        }
+        if (o.getClass() != this.getClass()) {
+            return false;
+        }
+        final Card other = (Card) o;
+        return (this.rank().getRankAsNumber() == other.rank().getRankAsNumber())
+                && this.suit().equals(other.suit());
+    }
+
+    @Override
+    public String toString() {
+        return this.rank.toString() + " of " + this.suit.toString();
     }
 }
