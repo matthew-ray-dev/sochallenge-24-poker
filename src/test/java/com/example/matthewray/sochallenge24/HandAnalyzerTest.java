@@ -7,8 +7,12 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import org.junit.Test;
+
+import org.apache.commons.math3.util.CombinatoricsUtils;
 
 /**
  * Unit tests for Card class.
@@ -281,6 +285,34 @@ public class HandAnalyzerTest {
                 checkOutcomeByPoints(hand, 1);
             }
         }
+    }
+
+    @Test
+    public void sanityCheckAllValidHands() {
+        final int expectedNumberOfHands = 2_598_960; // 52 choose 5
+        final List<Card> fullDeck = new ArrayList<>();
+        for (Card.Rank r : Card.Rank.values()) {
+            for (Card.Suit s : Card.Suit.values()) {
+                fullDeck.add(new Card(r, s));
+            }
+        }
+        final Iterator<int[]> handItr = CombinatoricsUtils.combinationsIterator(
+                fullDeck.size(), TEST_EXPECTED_HAND_SIZE);
+        int handsChecked = 0;
+        while (handItr.hasNext()) {
+            final int[] handIndices = handItr.next();
+            List<Card> hand = new LinkedList<>();
+            for (int i : handIndices) {
+                hand.add(fullDeck.get(i));
+            }
+            final int points = HandAnalyzer.getPointsForHand(hand);
+            final boolean isSane = (points >= 1)
+                    && (points <= 512)
+                    && ((points & -points) == points); // power-of-2 bitwise check
+            assertTrue("Failure on hand: " + hand, isSane);
+            handsChecked++;
+        }
+        assertEquals(expectedNumberOfHands, handsChecked);
     }
 
     /*
