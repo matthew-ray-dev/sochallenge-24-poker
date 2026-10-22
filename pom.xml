@@ -5,12 +5,11 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.example.matthewray.sochallenge24</groupId>
-  <artifactId>poker24</artifactId>
+  <artifactId>sochallenge-24-poker</artifactId>
   <version>1.0-SNAPSHOT</version>
 
-  <name>poker24</name>
-  <!-- FIXME change it to the project's website -->
-  <url>http://www.example.com</url>
+  <name>sochallenge-24-poker</name>
+  <url>https://github.com/matthew-ray-dev/sochallenge-24-poker/</url>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
