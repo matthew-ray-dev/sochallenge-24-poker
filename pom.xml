@@ -6,7 +6,7 @@
 
   <groupId>com.example.matthewray.sochallenge24</groupId>
   <artifactId>sochallenge-24-poker</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.0.0</version>
 
   <name>sochallenge-24-poker</name>
   <url>https://github.com/matthew-ray-dev/sochallenge-24-poker/</url>
