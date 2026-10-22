@@ -3,8 +3,6 @@ package com.example.matthewray.sochallenge24;
 import java.util.Arrays;
 import java.util.Collection;
 
-import com.example.matthewray.sochallenge24.Card.Rank;
-
 public class HandAnalyzer {
     private static final int EXPECTED_HAND_SIZE = 5;
 
@@ -110,7 +108,7 @@ public class HandAnalyzer {
 
         // Go down the list of results
         if (hasStraight && hasFlush) {
-            if (hand[hand.length - 1].rank().equals(Rank.ACE)) {
+            if (hand[hand.length - 1].rank().equals(Card.Rank.ACE)) {
                 return Result.ROYAL_FLUSH;
             } else {
                 return Result.STRAIGHT_FLUSH;
